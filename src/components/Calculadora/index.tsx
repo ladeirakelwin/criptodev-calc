@@ -22,7 +22,7 @@ const Calculadora: React.FC = () => {
 
 	function invertPole(currentValue: string) {
 		if (currentValue.match(/-/)) {
-			const newValue = String(Math.abs(Number(currentValue)));
+			const newValue = currentValue.replace('-', '');
 			setValue(newValue);
 		} else {
 			const newValue = '-' + value;
