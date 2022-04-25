@@ -3,8 +3,27 @@ import { Background, Container, Content } from './style';
 
 const Calculadora: React.FC = () => {
 	const [value, setValue] = useState('0');
-	const [currentProduct, setCurrentProduct] = useState('0');
+	const [currentProduct, setCurrentProduct] = useState(['0']);
 	const [operator, setoperator] = useState('');
+
+	function invertPole(currentValue: string) {
+		if (currentValue.match(/-/)) {
+			const newValue = String(Math.abs(Number(currentValue)));
+			setValue(newValue);
+		} else {
+			const newValue = '-' + value;
+			setValue(newValue);
+		}
+	}
+
+	function currentProductFormatted(): string {
+		return currentProduct.join(' ');
+	}
+
+	function allClean() {
+		setValue('0');
+		setCurrentProduct(['0']);
+	}
 
 	function clearValue(): void {
 		const newValue = value;
@@ -22,7 +41,16 @@ const Calculadora: React.FC = () => {
 	}
 
 	function insertOperator(newOperator: string): void {
-		
+		const size = currentProduct.length - 1;
+
+		if (size === 0 && currentProduct[0] === '0') {
+			setCurrentProduct([]);
+			setCurrentProduct([value, newOperator]);
+			setValue('');
+		} else if (size > 0 && currentProduct[size].match(/\D/g) && value) {
+			setCurrentProduct([...currentProduct, value, newOperator]);
+			setValue('');
+		}
 	}
 
 	return (
@@ -30,22 +58,35 @@ const Calculadora: React.FC = () => {
 			<Container>
 				<Content>
 					<div id="display">
-						<input type="text" id="subtotal" disabled value={currentProduct} />
+						<input
+							type="text"
+							id="subtotal"
+							disabled
+							value={currentProductFormatted()}
+						/>
 						<input type="text" id="total" disabled value={value} />
 					</div>
 
 					<div id="keypad">
 						<div className="line">
-							<button onClick={() => 0} type="button" className="operator">
+							<button onClick={() => allClean()} type="button" className="operator">
 								AC
 							</button>
-							<button onClick={() => 0} type="button" className="operator">
+							<button onClick={() => invertPole(value)} type="button" className="operator">
 								&#43;/&minus;
 							</button>
-							<button onClick={() => 0} type="button" className="operator">
+							<button
+								onClick={() => insertOperator('%')}
+								type="button"
+								className="operator"
+							>
 								%
 							</button>
-							<button onClick={() => 0} type="button" className="operator">
+							<button
+								onClick={() => insertOperator('/')}
+								type="button"
+								className="operator"
+							>
 								&frasl;
 							</button>
 						</div>
@@ -59,7 +100,11 @@ const Calculadora: React.FC = () => {
 							<button onClick={() => getValue('9')} type="button">
 								9
 							</button>
-							<button onClick={() => 0} type="button" className="operator">
+							<button
+								onClick={() => insertOperator('*')}
+								type="button"
+								className="operator"
+							>
 								&times;
 							</button>
 						</div>
@@ -73,7 +118,11 @@ const Calculadora: React.FC = () => {
 							<button onClick={() => getValue('6')} type="button">
 								6
 							</button>
-							<button onClick={() => 0} type="button" className="operator">
+							<button
+								onClick={() => insertOperator('-')}
+								type="button"
+								className="operator"
+							>
 								&minus;
 							</button>
 						</div>
@@ -87,7 +136,11 @@ const Calculadora: React.FC = () => {
 							<button onClick={() => getValue('3')} type="button">
 								3
 							</button>
-							<button onClick={() => 0} type="button" className="operator">
+							<button
+								onClick={() => insertOperator('+')}
+								type="button"
+								className="operator"
+							>
 								&#43;
 							</button>
 						</div>
