@@ -1,10 +1,13 @@
+import Calculadora from './components/Calculadora';
+import { GlobalStyle } from './styles/global';
 
 function App() {
-  return (
-    <div className="App">
-      <h1>Hello calc</h1>
-    </div>
-  );
+	return (
+		<>
+			<Calculadora />
+			<GlobalStyle />
+		</>
+	);
 }
 
 export default App;
