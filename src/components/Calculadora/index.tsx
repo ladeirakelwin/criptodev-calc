@@ -4,7 +4,21 @@ import { Background, Container, Content } from './style';
 const Calculadora: React.FC = () => {
 	const [value, setValue] = useState('0');
 	const [currentProduct, setCurrentProduct] = useState(['0']);
-	const [operator, setoperator] = useState('');
+
+	function operationResult(a: string, operator: string, b: string): string {
+		switch (operator) {
+			case '+':
+				return String(Number(a) + Number(b));
+			case '-':
+				return String(Number(a) - Number(b));
+			case '/':
+				return String(Number(a) / Number(b));
+			case '*':
+				return String(Number(a) * Number(b));
+			default:
+				return '0';
+		}
+	}
 
 	function invertPole(currentValue: string) {
 		if (currentValue.match(/-/)) {
@@ -21,7 +35,7 @@ const Calculadora: React.FC = () => {
 	}
 
 	function allClean() {
-		setValue('0');
+		setValue('');
 		setCurrentProduct(['0']);
 	}
 
@@ -53,6 +67,43 @@ const Calculadora: React.FC = () => {
 		}
 	}
 
+	function totalizing(currentValue: string): void {
+		const hasOperator = currentProduct.findIndex((item) => item in ['*', '/', '-', '+']);
+		if (!currentValue || hasOperator !== -1) {
+			alert('A totalização tem q ser feita com no mínimo 2 valores e um operador!!!');
+
+		} else {
+			const newValue = [...currentProduct, currentValue];
+
+			const size = newValue.length;
+
+			if (size > 1) {
+				const allValues = { values: newValue, TD: true, final: '' };
+
+				while (allValues.values.length > 1) {
+					const hasTorD = allValues.values.findIndex(
+						(item) => item === '*' || item === '/'
+					);
+
+					if (hasTorD !== -1) {
+						const [start, end] = [hasTorD - 1, hasTorD + 2];
+						const [value1, operator, value2] = allValues.values.slice(start, end);
+						const result: string = operationResult(value1, operator, value2);
+						allValues.values.splice(start, 3, result);
+					} else {
+						const [start, end] = [0, 3];
+						const [value1, operator, value2] = allValues.values.slice(start, end);
+						const result: string = operationResult(value1, operator, value2);
+						allValues.values.splice(start, 3, result);
+					}
+				}
+
+				setCurrentProduct(() => ['0']);
+				setValue(() => allValues.values['0']);
+			}
+		}
+	}
+
 	return (
 		<Background>
 			<Container>
@@ -72,7 +123,11 @@ const Calculadora: React.FC = () => {
 							<button onClick={() => allClean()} type="button" className="operator">
 								AC
 							</button>
-							<button onClick={() => invertPole(value)} type="button" className="operator">
+							<button
+								onClick={() => invertPole(value)}
+								type="button"
+								className="operator"
+							>
 								&#43;/&minus;
 							</button>
 							<button
@@ -152,7 +207,7 @@ const Calculadora: React.FC = () => {
 								C
 							</button>
 							<button
-								onClick={() => 0}
+								onClick={() => totalizing(value)}
 								type="button"
 								className="operator"
 								id="equals"
