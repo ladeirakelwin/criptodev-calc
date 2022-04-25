@@ -29,6 +29,7 @@ export const Content = styled.form`
 		margin-bottom: 2rem;
 
 		input {
+      background: none;
 			width: 100%;
 			height: 3rem;
 			border: none;
@@ -38,6 +39,7 @@ export const Content = styled.form`
 				height: 5rem;
 				border-bottom: none;
 				color: #00a8ff;
+        font-size: 1.25rem;
 			}
 			&#total {
 				border-top: none;
@@ -129,7 +131,7 @@ export const Content = styled.form`
 		#display {
 			input {
 				&#subtotal {
-					font-size: 2rem;
+					font-size: 2.25rem;
 				}
 				&#total {
 					font-size: 5.5rem;
@@ -150,6 +152,8 @@ export const Content = styled.form`
 
 	@media (min-width: 1440px) {
 		max-width: 50%;
+
+    
 
     #keypad {
 			.line {
