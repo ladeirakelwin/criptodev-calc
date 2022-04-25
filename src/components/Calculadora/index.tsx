@@ -58,12 +58,16 @@ const Calculadora: React.FC = () => {
 		const size = currentProduct.length - 1;
 
 		if (value) {
-			if (size === 0 && currentProduct[0] === '0') {
+			const firstTimes = size === 0 && currentProduct[0] === '0';
+			const otherTimes = size > 0 && currentProduct[size].match(/\D/g) && value;
+			if (firstTimes) {
+				const currentValue = Math.sign(Number(value)) === -1 ? `(${value})` : value;
 				setCurrentProduct([]);
-				setCurrentProduct([value, newOperator]);
+				setCurrentProduct([currentValue, newOperator]);
 				setValue('');
-			} else if (size > 0 && currentProduct[size].match(/\D/g) && value) {
-				setCurrentProduct([...currentProduct, value, newOperator]);
+			} else if (otherTimes) {
+				const currentValue = Math.sign(Number(value)) === -1 ? `(${value})` : value;
+				setCurrentProduct([...currentProduct, currentValue, newOperator]);
 				setValue('');
 			}
 		} else {
@@ -77,11 +81,11 @@ const Calculadora: React.FC = () => {
 			alert('A totalização tem que começar e terminar com um valor e possuir um operador!!!');
 		} else {
 			const newValue = [...currentProduct, currentValue];
-
 			const size = newValue.length;
+			const cleanValues = newValue.map(item => item.replace(/(\(|\))/g, ''))
 
 			if (size > 1) {
-				const allValues = { values: newValue, TD: true, final: '' };
+				const allValues = { values: cleanValues, TD: true, final: '' };
 
 				while (allValues.values.length > 1) {
 					const hasTorD = allValues.values.findIndex(
