@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Background, Container, Content } from './style';
 
 const Calculadora: React.FC = () => {
-	const [value, setValue] = useState('0');
+	const [value, setValue] = useState('');
 	const [currentProduct, setCurrentProduct] = useState(['0']);
 
 	function operationResult(a: string, operator: string, b: string): string {
@@ -50,28 +50,31 @@ const Calculadora: React.FC = () => {
 	}
 
 	function getValue(newValue: string): void {
-		const updateValue = String(Number(value + newValue));
+		const updateValue = value + newValue;
 		setValue(updateValue);
 	}
 
 	function insertOperator(newOperator: string): void {
 		const size = currentProduct.length - 1;
 
-		if (size === 0 && currentProduct[0] === '0') {
-			setCurrentProduct([]);
-			setCurrentProduct([value, newOperator]);
-			setValue('');
-		} else if (size > 0 && currentProduct[size].match(/\D/g) && value) {
-			setCurrentProduct([...currentProduct, value, newOperator]);
-			setValue('');
+		if (value) {
+			if (size === 0 && currentProduct[0] === '0') {
+				setCurrentProduct([]);
+				setCurrentProduct([value, newOperator]);
+				setValue('');
+			} else if (size > 0 && currentProduct[size].match(/\D/g) && value) {
+				setCurrentProduct([...currentProduct, value, newOperator]);
+				setValue('');
+			}
+		} else {
+			alert('Insira algum valor!!!');
 		}
 	}
 
 	function totalizing(currentValue: string): void {
-		const hasOperator = currentProduct.findIndex((item) => item in ['*', '/', '-', '+']);
-		if (!currentValue || hasOperator !== -1) {
-			alert('A totalização tem q ser feita com no mínimo 2 valores e um operador!!!');
-
+		const hasOperator = currentProduct.findIndex((item) => ['*', '/', '-', '+'].includes(item));
+		if (currentProduct.length < 2 || !(hasOperator !== -1) || !currentValue) {
+			alert('A totalização tem que começar e terminar com um valor e possuir um operador!!!');
 		} else {
 			const newValue = [...currentProduct, currentValue];
 
@@ -123,6 +126,9 @@ const Calculadora: React.FC = () => {
 							<button onClick={() => allClean()} type="button" className="operator">
 								AC
 							</button>
+							<button onClick={() => clearValue()} type="button" className="operator">
+								C
+							</button>
 							<button
 								onClick={() => invertPole(value)}
 								type="button"
@@ -130,13 +136,7 @@ const Calculadora: React.FC = () => {
 							>
 								&#43;/&minus;
 							</button>
-							<button
-								onClick={() => insertOperator('%')}
-								type="button"
-								className="operator"
-							>
-								%
-							</button>
+
 							<button
 								onClick={() => insertOperator('/')}
 								type="button"
@@ -203,8 +203,13 @@ const Calculadora: React.FC = () => {
 							<button onClick={() => getValue('0')} type="button">
 								0
 							</button>
-							<button onClick={() => clearValue()} type="button" className="operator">
-								C
+
+							<button
+								onClick={() => getValue('.')}
+								type="button"
+								className="operator"
+							>
+								&bull;
 							</button>
 							<button
 								onClick={() => totalizing(value)}
