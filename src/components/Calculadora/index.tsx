@@ -1,8 +1,7 @@
-import { setgid } from 'process';
 import React, { useState } from 'react';
 import { Background, Container, Content } from './style';
 
-
+// TODO: se o último value for negativo, colocar parenteses nele
 const Calculadora: React.FC = () => {
 	const [value, setValue] = useState('');
 	const [currentProduct, setCurrentProduct] = useState(['0']);
@@ -79,6 +78,7 @@ const Calculadora: React.FC = () => {
 	}
 
 	function totalizing(currentValue: string): void {
+		currentValue = Math.sign(Number(currentValue)) !== -1 ? currentValue : `(${currentValue})`;
 		const hasOperator = currentProduct.findIndex((item) => ['*', '/', '-', '+'].includes(item));
 		if (currentProduct.length < 2 || !(hasOperator !== -1) || !currentValue) {
 			alert('A totalização tem que começar e terminar com um valor e possuir um operador!!!');
@@ -108,7 +108,7 @@ const Calculadora: React.FC = () => {
 					}
 				}
 
-				const resultOperation = `${currentProductFormatted() + value} = ${
+				const resultOperation = `${currentProductFormatted() + ' ' + currentValue} = ${
 					allValues.values[0]
 				}`;
 
@@ -118,9 +118,9 @@ const Calculadora: React.FC = () => {
 					'history',
 					JSON.stringify([...allOperations, resultOperation])
 				);
-				const lastHistory = sessionStorage.getItem('history') || ''
-				const history = JSON.parse(lastHistory)
-				console.log(history)
+				const lastHistory = sessionStorage.getItem('history') || '';
+				const history = JSON.parse(lastHistory);
+				console.log(history);
 
 				alert(`Resultado da operação é:\n${resultOperation}`);
 
