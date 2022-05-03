@@ -105,6 +105,8 @@ const Calculadora: React.FC = () => {
 					}
 				}
 
+				alert(`Resultado da operação é:\n${currentProductFormatted() + value} = ${allValues.values[0]}`)
+
 				setCurrentProduct(() => ['0']);
 				setValue(() => allValues.values['0']);
 			}
