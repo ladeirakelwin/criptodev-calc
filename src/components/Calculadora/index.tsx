@@ -1,9 +1,12 @@
+import { setgid } from 'process';
 import React, { useState } from 'react';
 import { Background, Container, Content } from './style';
+
 
 const Calculadora: React.FC = () => {
 	const [value, setValue] = useState('');
 	const [currentProduct, setCurrentProduct] = useState(['0']);
+	const [allOperations, setAllOperations] = useState<String[]>([]);
 
 	function operationResult(a: string, operator: string, b: string): string {
 		switch (operator) {
@@ -82,7 +85,7 @@ const Calculadora: React.FC = () => {
 		} else {
 			const newValue = [...currentProduct, currentValue];
 			const size = newValue.length;
-			const cleanValues = newValue.map(item => item.replace(/(\(|\))/g, ''))
+			const cleanValues = newValue.map((item) => item.replace(/(\(|\))/g, ''));
 
 			if (size > 1) {
 				const allValues = { values: cleanValues, TD: true, final: '' };
@@ -105,7 +108,21 @@ const Calculadora: React.FC = () => {
 					}
 				}
 
-				alert(`Resultado da operação é:\n${currentProductFormatted() + value} = ${allValues.values[0]}`)
+				const resultOperation = `${currentProductFormatted() + value} = ${
+					allValues.values[0]
+				}`;
+
+				setAllOperations([...allOperations, resultOperation]);
+
+				sessionStorage.setItem(
+					'history',
+					JSON.stringify([...allOperations, resultOperation])
+				);
+				const lastHistory = sessionStorage.getItem('history') || ''
+				const history = JSON.parse(lastHistory)
+				console.log(history)
+
+				alert(`Resultado da operação é:\n${resultOperation}`);
 
 				setCurrentProduct(() => ['0']);
 				setValue(() => allValues.values['0']);
