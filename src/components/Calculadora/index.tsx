@@ -66,6 +66,7 @@ const Calculadora: React.FC = () => {
 	}
 
 	function getValue(newValue: string): void {
+		if (newValue == '.' && value.match(/\./)) return
 		const updateValue = value + newValue;
 		setValue(updateValue);
 	}
