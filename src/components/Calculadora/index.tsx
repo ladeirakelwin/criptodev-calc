@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Background, Container, Content } from './style';
 
 // TODO: se o último value for negativo, colocar parenteses nele
@@ -6,6 +6,20 @@ const Calculadora: React.FC = () => {
 	const [value, setValue] = useState('');
 	const [currentProduct, setCurrentProduct] = useState(['0']);
 	const [allOperations, setAllOperations] = useState<String[]>([]);
+
+	useEffect(() => {
+		const total: HTMLInputElement | null = document.querySelector('#total'); 
+		if (!total) return
+
+		total.scrollLeft = total.scrollWidth
+	},[value])
+
+	useEffect(() => {
+		const subtotal: HTMLInputElement | null = document.querySelector('#subtotal'); 
+		if (!subtotal) return
+
+		subtotal.scrollLeft = subtotal.scrollWidth
+	},[value])
 
 	function operationResult(a: string, operator: string, b: string): string {
 		switch (operator) {
